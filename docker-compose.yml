@@ -1,0 +1,94 @@
+version: '3'
+services:
+  web:
+    image: webdevops/php-apache-dev:8.2-alpine
+    container_name: web
+    restart: always
+    user: application
+    environment:
+      - WEB_ALIAS_DOMAIN=local.domain.com
+      - WEB_DOCUMENT_ROOT=/app/pub
+      - PHP_DATE_TIMEZONE=EST
+      - PHP_DISPLAY_ERRORS=1
+      - PHP_MEMORY_LIMIT=2048M
+      - PHP_MAX_EXECUTION_TIME=300
+      - PHP_POST_MAX_SIZE=500M
+      - PHP_UPLOAD_MAX_FILESIZE=1024M
+    volumes:
+      - .:/app:cached
+    ports:
+      - "80:80"
+      - "443:443"
+      - "32823:22"
+    links:
+      - mysql
+  mysql:
+    image: mariadb:10.6
+    container_name: mysql
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=magento
+    volumes:
+      - db-data:/var/lib/mysql
+  phpmyadmin:
+    container_name: phpmyadmin
+    restart: always
+    image: phpmyadmin/phpmyadmin:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - PMA_USER=root
+      - PMA_PASSWORD=root
+    ports:
+      - "8080:80"
+    links:
+      - mysql:db
+    depends_on:
+      - mysql
+  opensearch:
+    image: markoshust/magento-opensearch:2.5-1
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      - OPENSEARCH_HOST=opensearch
+      - OPENSEARCH_PORT=9200
+      - OPENSEARCH_HEALTHCHECK_TIMEOUT=100
+
+        ## Set custom heap size to avoid memory errors
+      - "OPENSEARCH_JAVA_OPTS=-Xms1g -Xmx1g"
+
+        # Prevent security patch conflicts with core M2 code
+      - DISABLE_SECURITY_PLUGIN=true
+      - "discovery.type=single-node"
+      ## Avoid test failures due to small disks
+      ## More info at https://github.com/markshust/docker-magento/issues/488
+      - "cluster.routing.allocation.disk.threshold_enabled=false"
+      - "index.blocks.read_only_allow_delete"
+      ## Uncomment the following line to increase the virtual memory map count
+      #   - "max_map_count=262144"
+
+    ## If you wish to use Elasticsearch, comment out opensearch image above and
+    ## uncomment this block. Do the same in the composer.healthcheck.yaml file.
+    # Additionally, if you are performing the manual setup, you will need to
+    # update the bin/setup command to use the $ES_HOST variable as the value for
+    # the --elasticsearch-host argument passed to bin/magento setup:install.
+    #elasticsearch:
+    #  image: markoshust/magento-elasticsearch:7.17-1
+    #  ports:
+    #    - "9200:9200"
+    #    - "9300:9300"
+    #  env_file: env/elasticsearch.env
+    #  environment:
+    #    - "discovery.type=single-node"
+    #    ## Avoid test failures due to small disks
+    #    ## More info at https://github.com/markshust/docker-magento/issues/488
+    #    - "cluster.routing.allocation.disk.threshold_enabled=false"
+    #    - "index.blocks.read_only_allow_delete"
+    #    ## Uncomment the following line to increase the virtual memory map count
+    #    - "max_map_count=262144"
+volumes:
+  db-data:
+    external: false
