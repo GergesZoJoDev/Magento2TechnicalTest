@@ -1,0 +1,21 @@
+{
+    "name": "CustomVendor/CustomModule",
+    "description": "Modulo solicitado que redirija a una página específica y muestre un mensaje, manteniendo el diseño del sitio (cabecera, footer y layout completo)",
+    "require": {
+        "php": "^8.2.0"
+    },
+    "type": "magento2-module",
+    "version": "1.0.0",
+    "license": [
+        "OSL-3.0",
+        "AFL-3.0"
+    ],
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "CustomVendor\\CustomModule\\": ""
+        }
+    }
+}
