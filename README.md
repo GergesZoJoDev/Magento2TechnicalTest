@@ -3,7 +3,7 @@
 
 El presente proyecto es el resultado de una prueba técnica solicitada en Magento 2(v2.4.6) utilizando Composer, Docker, OpenSearch y MariaDB.
 
-## Prerequisites
+## Prerequisitos
 
 El presente setup asume que Docker ya se encuentra corriendo sobre tu computadora. [Descarga e instala Docker Desktop](https://www.docker.com/products/docker-desktop).
 
@@ -55,3 +55,12 @@ php bin/magento setup:install \
 - Felicitaciones! Ha configurado satisfactoriamente Magento 2 en Docker.
 
 Nota: El proyecto no se encuentra configurado para envío de correos, debido a eso es recomendable desactivar la autenticación de dos pasos, mediante el comando siguiente ``` php bin/magento module:disable Magento_TwoFactorAuth ``` o abra el archivo ``` app/etc/config.php ``` y cambie el valor de ``` Magento_TwoFactorAuth ``` y ``` Magento_AdminAdobeImsTwoFactorAuth ``` a ``` 0 ```. Posteriormente ejecute el comando : ``` php bin/magento setup:di:compile ``` para compilar tu proyecto.
+
+## Crear un Módulo
+
+- Solicitud:
+
+  Desarrolla un módulo que redirija a una página específica y muestre un mensaje, manteniendo el diseño del sitio (cabecera, footer y layout completo).
+
+  Solución: 
+  Se creo el modulo ``` CustomVendor_CustomModule ``` y dentro de este un directorio/carpeta de controlador llamado ``` Index ``` el cual contiene dos clases de controlador/acción llamadas ``` Index ``` y ``` Other ```; el primero( ``` Index ``` ) representa el directorio raíz del modulo al cual se accede mediante la URL ``` \custommodule ``` o ``` \custommodule\index\index ```. La funcionalidad aplicada para la URL mencionada es redireccionar a una nueva URL que apunta a la clase de controlador/acción llamada ``` Other ```, dicha clase mediante su ruta es llamada a un layout el cual muestra el contenido del template ``` welcome.phtml ``` que contiene el mensaje ``` Texto Prueba ```. 
