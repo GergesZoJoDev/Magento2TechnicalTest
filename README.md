@@ -63,4 +63,16 @@ Nota: El proyecto no se encuentra configurado para envío de correos, debido a e
   Desarrolla un módulo que redirija a una página específica y muestre un mensaje, manteniendo el diseño del sitio (cabecera, footer y layout completo).
 
   Solución: 
-  Se creo el modulo ``` CustomVendor_CustomModule ``` y dentro de este un directorio/carpeta de controlador llamado ``` Index ``` el cual contiene dos clases de controlador/acción llamadas ``` Index ``` y ``` Other ```; el primero( ``` Index ``` ) representa el directorio raíz del modulo al cual se accede mediante la URL ``` \custommodule ``` o ``` \custommodule\index\index ```. La funcionalidad aplicada para la URL mencionada es redireccionar a una nueva URL que apunta a la clase de controlador/acción llamada ``` Other ```, dicha clase mediante su ruta es llamada a un layout el cual muestra el contenido del template ``` welcome.phtml ``` que contiene el mensaje ``` Texto Prueba ```. 
+  Se creó el modulo ``` CustomVendor_CustomModule ``` y dentro de este un directorio/carpeta de controlador llamado ``` Index ``` el cual contiene dos clases de controlador/acción llamadas ``` Index ``` y ``` Other ```; el primero( ``` Index ``` ) representa el directorio raíz del modulo al cual se accede mediante la URL ``` \custommodule ``` o ``` \custommodule\index\index ```. La funcionalidad aplicada para la URL mencionada es redireccionar a una nueva URL que apunta a la clase de controlador/acción llamada ``` Other ```, dicha clase mediante su ruta es llamada a un layout el cual muestra el contenido del template ``` welcome.phtml ``` que contiene el mensaje ``` Texto Prueba ```. 
+
+## Configuración de la Tienda
+
+- Solicitud:
+
+  Agrega campos "sobreprecio" y "costo de envío" en Store
+  -> Configuration -> “Mi Configuración”, que sean editables por el administrador.
+
+- Solución: Se creó el archivo ``` system.xml ``` en del directorio ``` \etc\adminhtml ``` y dentro de dicho archivo se estableció un nuevo tab con etiqueta "Mi Configuración" la cual, contendrá una sección con etiqueta "Sobreprecio y costo de envío" encargado de mostrar los campos "sobreprecio" y "costo de envío".
+
+  De igual manera se creó el archivo  ``` config.xml ``` dentro del directorio ``` \etc ``` el cual contiene la configuración default para los nuevos campos generados.
+
