@@ -76,3 +76,10 @@ Nota: El proyecto no se encuentra configurado para envío de correos, debido a e
 
   De igual manera se creó el archivo  ``` config.xml ``` dentro del directorio ``` \etc ``` el cual contiene la configuración default para los nuevos campos generados.
 
+## Extensión de Módulo del Core
+
+- Solicitud:
+
+  Modifica la funcionalidad de búsqueda para cambiar el precio de los productos sumando el "sobreprecio"
+
+- Solución: Se creó el archivo ``` di.xml ``` en el directorio ``` \etc ``` y dentro de dicho archivo se estableció un plugin que apunta al archivo ``` FinalPricePlugin.php ``` que se encuentra en el directorio ``` \Plugin ``` el cual se encarga de obtener el precio del producto y sumar el campo "sobreprecio" para posteriormente ser retornado y mostrado en frontend. 
