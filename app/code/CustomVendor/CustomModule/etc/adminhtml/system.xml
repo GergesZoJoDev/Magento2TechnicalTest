@@ -13,10 +13,12 @@
                 <label>Mi Configuración</label>
                 <field id="display_text_1" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Sobreprecio</label>
+                    <validate>validate-number</validate>
                     <comment>This text will display on the frontend.</comment>
                 </field>
                 <field id="display_text_2" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>costo de envío</label>
+                    <validate>validate-number</validate>
                     <comment>This text will display on the frontend.</comment>
                 </field>
             </group>
