@@ -97,8 +97,8 @@ Nota: El proyecto no se encuentra configurado para envío de correos, debido a e
 
 - Solución: 
   
-  - Se agregó dentro del archivo ``` config.xml ``` ubicado en el directorio ``` \etc ``` el siguiente contenido con la finalidad de establecer valores default para el nuevo método de envío personalizado:
-  - 
+  Se agregó dentro del archivo ``` config.xml ``` ubicado en el directorio ``` \etc ``` el siguiente contenido con la finalidad de establecer valores default para el nuevo método de envío personalizado:
+  
 ```
   <carriers>
     <customshipping>
@@ -113,8 +113,9 @@ Nota: El proyecto no se encuentra configurado para envío de correos, debido a e
     </customshipping>
   </carriers>
 ```
-  - Se creó el archivo ``` Carrier.php ``` en el directorio ``` \Model ``` dentro del cual en la función ``` getShippingPrice() ``` se realiza la sumatoria del precio default(``` $this->getConfigData('price') ```) del método de envío personalizado y el campo personalizado "costo de envío"(``` $this->scopeConfig->getValue('custommodule/general/display_text_2', ScopeInterface::SCOPE_STORE) ```).
-  - Se agregó dentro del archivo ``` system.xml ``` ubicado en el directorio ``` \etc\adminhtml ``` el siguiente contenido para mostrar la información default del método de envío personalizado:
+Se creó el archivo ``` Carrier.php ``` en el directorio ``` \Model ``` dentro del cual en la función ``` getShippingPrice() ``` se realiza la sumatoria del precio default(``` $this->getConfigData('price') ```) del método de envío personalizado y el campo personalizado "costo de envío"(``` $this->scopeConfig->getValue('custommodule/general/display_text_2', ScopeInterface::SCOPE_STORE) ```).
+
+Se agregó dentro del archivo ``` system.xml ``` ubicado en el directorio ``` \etc\adminhtml ``` el siguiente contenido para mostrar la información default del método de envío personalizado:
   
   Nota: Para visualizar el formulario default dentro del admin debe dirigirse a ``` Stores\Configuration\Sales\Delivery Methods ``` y el formulario del método de envío personalizado será mostrado como la segunda opción de métodos de envíos. 
 ```
@@ -168,4 +169,18 @@ Nota: El proyecto no se encuentra configurado para envío de correos, debido a e
     </section> 
 ```
 Para visualizar el método de envío dentro del checkout será necesario realizar el proceso de selección y agregado de productos al checkout y en la pantalla del checkout el método de envío personalizado será mostrado con el titulo y nombre de método ``` Custom Shipping ```, considerar que el precio default del método de envío es de $10, para visualizar la sumatoria con el campo "cobro de envío" se deberá realizar la edición de dicho campo y su respectivo almacenado dentro del panel de administración del proyecto.
+
+## Campos Personalizados en Checkout
+
+- Solicitud: 
+
+  Añade al checkout un campo de texto "comentarios" y un selector obligatorio con al menos dos opciones (ejemplo: "sexo" con opciones "hombre" o “mujer”).
+
+- Solución:
+  
+  Se crea el ``` custom-checkout-form.js ``` en el directorio ``` \view\frontend\web\js\view ``` con la finalidad de definir el componente del formulario.
+
+  Se genera el template del formulario en el archivo ``` custom-checkout-form.html ``` en el directorio ``` \view\frontend\web\template ``` para agregar knockout.js al componente de formulario.
+
+  Se agrega el archivo ``` checkout_index_index ``` en el directorio ``` \view\frontend\layout ``` con la finalidad de declarar el formulario en el layout del checkout y con esto agregar los campos solicitados.   
 
