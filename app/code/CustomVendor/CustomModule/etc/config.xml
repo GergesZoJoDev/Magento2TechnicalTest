@@ -7,5 +7,17 @@
                 <display_text_2>0</display_text_2>
             </general>
         </custommodule>
+        <carriers>
+            <customshipping>
+                <active>1</active>
+                <sallowspecific>0</sallowspecific>
+                <model>CustomVendor\CustomModule\Model\Carrier</model>
+                <name>Custom Shipping</name>
+                <price>10.0</price>
+                <title>Custom Shipping</title>
+                <specificerrmsg>Este método de envío no está habilitado. Para usar este método de envío por favor contactanos.</specificerrmsg>
+                <handling_type>F</handling_type>
+            </customshipping>
+        </carriers>
     </default>
 </config>

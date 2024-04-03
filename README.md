@@ -21,7 +21,7 @@ Una vez realizada la clonación del presente proyecto se recomienda realizar los
 - Debe ir al directorio raíz del proyecto dentro de su contenedor mediante el comando: ```cd /app```
 - Aunque este paso es opcional, se recomienda realizar la implementación de datos de prueba mediante el comando: ```php bin/magento sampledata:deploy```
 - Al termino de la implementación de datos de prueba, ejecute el siguiente comando encargado de instalar Magento 2
-```bash
+```
 php bin/magento setup:install \
 --admin-firstname=Gerges \
 --admin-lastname=Zamudio \
@@ -62,7 +62,8 @@ Nota: El proyecto no se encuentra configurado para envío de correos, debido a e
 
   Desarrolla un módulo que redirija a una página específica y muestre un mensaje, manteniendo el diseño del sitio (cabecera, footer y layout completo).
 
-  Solución: 
+- Solución: 
+  
   Se creó el modulo ``` CustomVendor_CustomModule ``` y dentro de este un directorio/carpeta de controlador llamado ``` Index ``` el cual contiene dos clases de controlador/acción llamadas ``` Index ``` y ``` Other ```; el primero( ``` Index ``` ) representa el directorio raíz del modulo al cual se accede mediante la URL ``` \custommodule ``` o ``` \custommodule\index\index ```. La funcionalidad aplicada para la URL mencionada es redireccionar a una nueva URL que apunta a la clase de controlador/acción llamada ``` Other ```, dicha clase mediante su ruta es llamada a un layout el cual muestra el contenido del template ``` welcome.phtml ``` que contiene el mensaje ``` Texto Prueba ```. 
 
 ## Configuración de la Tienda
@@ -72,7 +73,9 @@ Nota: El proyecto no se encuentra configurado para envío de correos, debido a e
   Agrega campos "sobreprecio" y "costo de envío" en Store
   -> Configuration -> “Mi Configuración”, que sean editables por el administrador.
 
-- Solución: Se creó el archivo ``` system.xml ``` en del directorio ``` \etc\adminhtml ``` y dentro de dicho archivo se estableció un nuevo tab con etiqueta "Mi Configuración" la cual, contendrá una sección con etiqueta "Sobreprecio y costo de envío" encargado de mostrar los campos "sobreprecio" y "costo de envío".
+- Solución: 
+
+  Se creó el archivo ``` system.xml ``` en del directorio ``` \etc\adminhtml ``` y dentro de dicho archivo se estableció un nuevo tab con etiqueta "Mi Configuración" la cual, contendrá una sección con etiqueta "Sobreprecio y costo de envío" encargado de mostrar los campos "sobreprecio" y "costo de envío".
 
   De igual manera se creó el archivo  ``` config.xml ``` dentro del directorio ``` \etc ``` el cual contiene la configuración default para los nuevos campos generados.
 
@@ -82,4 +85,87 @@ Nota: El proyecto no se encuentra configurado para envío de correos, debido a e
 
   Modifica la funcionalidad de búsqueda para cambiar el precio de los productos sumando el "sobreprecio"
 
-- Solución: Se creó el archivo ``` di.xml ``` en el directorio ``` \etc ``` y dentro de dicho archivo se estableció un plugin que apunta al archivo ``` FinalPricePlugin.php ``` que se encuentra en el directorio ``` \Plugin ``` el cual se encarga de obtener el precio del producto y sumar el campo "sobreprecio" para posteriormente ser retornado y mostrado en frontend. 
+- Solución: 
+  
+  Se creó el archivo ``` di.xml ``` en el directorio ``` \etc ``` y dentro de dicho archivo se estableció un plugin que apunta al archivo ``` FinalPricePlugin.php ``` que se encuentra en el directorio ``` \Plugin ``` el cual se encarga de obtener el precio del producto y sumar el campo "sobreprecio" para posteriormente ser retornado y mostrado en frontend. 
+
+## Nuevo Método de Envío
+
+- Solicitud:
+
+  Implementa un método de envío con un costo basado en el campo "costo de envío" y que esté disponible en el checkout.
+
+- Solución: 
+  
+  - Se agregó dentro del archivo ``` config.xml ``` ubicado en el directorio ``` \etc ``` el siguiente contenido con la finalidad de establecer valores default para el nuevo método de envío personalizado:
+  - 
+```
+  <carriers>
+    <customshipping>
+        <active>1</active>
+        <sallowspecific>0</sallowspecific>
+        <model>CustomVendor\CustomModule\Model\Carrier</model>
+        <name>Custom Shipping</name>
+        <price>10.0</price>
+        <title>Custom Shipping</title>
+        <specificerrmsg>Este método de envío no está habilitado. Para usar este método de envío por favor contactanos.</specificerrmsg>
+        <handling_type>F</handling_type>
+    </customshipping>
+  </carriers>
+```
+  - Se creó el archivo ``` Carrier.php ``` en el directorio ``` \Model ``` dentro del cual en la función ``` getShippingPrice() ``` se realiza la sumatoria del precio default(``` $this->getConfigData('price') ```) del método de envío personalizado y el campo personalizado "costo de envío"(``` $this->scopeConfig->getValue('custommodule/general/display_text_2', ScopeInterface::SCOPE_STORE) ```).
+  - Se agregó dentro del archivo ``` system.xml ``` ubicado en el directorio ``` \etc\adminhtml ``` el siguiente contenido para mostrar la información default del método de envío personalizado:
+  
+  Nota: Para visualizar el formulario default dentro del admin debe dirigirse a ``` Stores\Configuration\Sales\Delivery Methods ``` y el formulario del método de envío personalizado será mostrado como la segunda opción de métodos de envíos. 
+```
+    <section id="carriers" translate="label" type="text" sortOrder="320" showInDefault="1" showInWebsite="1" showInStore="1">
+        <group id="simpleshipping" translate="label" type="text" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Mageplaza Simple Shipping Method</label>
+            <field id="active" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
+                <label>Enabled</label>
+                <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+            </field>
+            <field id="name" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                <label>Method Name</label>
+            </field>
+            <field id="price" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
+                <label>Price</label>
+                <validate>validate-number validate-zero-or-greater</validate>
+            </field>
+            <field id="handling_type" translate="label" type="select" sortOrder="7" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
+                <label>Calculate Handling Fee</label>
+                <source_model>Magento\Shipping\Model\Source\HandlingType</source_model>
+            </field>
+            <field id="handling_fee" translate="label" type="text" sortOrder="8" showInDefault="1" showInWebsite="1" showInStore="0">
+                <label>Handling Fee</label>
+                <validate>validate-number validate-zero-or-greater</validate>
+            </field>
+            <field id="sort_order" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="0">
+                <label>Sort Order</label>
+            </field>
+            <field id="title" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                <label>Title</label>
+            </field>
+            <field id="sallowspecific" translate="label" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
+                <label>Ship to Applicable Countries</label>
+                <frontend_class>shipping-applicable-country</frontend_class>
+                <source_model>Magento\Shipping\Model\Config\Source\Allspecificcountries</source_model>
+            </field>
+            <field id="specificcountry" translate="label" type="multiselect" sortOrder="91" showInDefault="1" showInWebsite="1" showInStore="0">
+                <label>Ship to Specific Countries</label>
+                <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
+                <can_be_empty>1</can_be_empty>
+            </field>
+            <field id="showmethod" translate="label" type="select" sortOrder="92" showInDefault="1" showInWebsite="1" showInStore="0">
+                <label>Show Method if Not Applicable</label>
+                <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                <frontend_class>shipping-skip-hide</frontend_class>
+            </field>
+            <field id="specificerrmsg" translate="label" type="textarea" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                <label>Displayed Error Message</label>
+            </field>
+        </group>
+    </section> 
+```
+Para visualizar el método de envío dentro del checkout será necesario realizar el proceso de selección y agregado de productos al checkout y en la pantalla del checkout el método de envío personalizado será mostrado con el titulo y nombre de método ``` Custom Shipping ```, considerar que el precio default del método de envío es de $10, para visualizar la sumatoria con el campo "cobro de envío" se deberá realizar la edición de dicho campo y su respectivo almacenado dentro del panel de administración del proyecto.
+
