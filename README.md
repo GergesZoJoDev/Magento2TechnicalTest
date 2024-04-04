@@ -188,8 +188,16 @@ Para visualizar el método de envío dentro del checkout será necesario realiza
 
 - Solicitud:
 
-  Añade al checkout un campo de texto "comentarios" y un selector obligatorio con al menos dos opciones (ejemplo: "sexo" con opciones "hombre" o “mujer”).
+  - Crear un Módulo en Magento 2:
+    - Crea un nuevo módulo en Magento 2.
+    - Define un evento sales_order_place_after en tu archivo events.xml.
+  - Implementar el Observer:
+    - Crea una clase Observer que se dispare después de que se complete una compra.
+    - En este Observer, recopila los detalles del pedido, como los artículos comprados, costos y datos del cliente.
+    - Convierte esta información en formato JSON.
+    - Escribe este JSON en un archivo de log.
 
 - Solución:
-  
-  
+
+  Se creó archivo ``` events.xml ``` en el directorio ``` \etc ``` el cual será el encargado de definir la clase encargada de atender el ``` evento sales_order_place_after ```.
+  Se genera la clase ``` Saleorderplaceafter ``` en el directorio ``` \Observer ``` dentro del cual se realiza la generación de un log exclusivo para ordenes y el almacenado de la información de la orden en formato JSON.
