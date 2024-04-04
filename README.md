@@ -184,3 +184,12 @@ Para visualizar el método de envío dentro del checkout será necesario realiza
 
   Se agrega el archivo ``` checkout_index_index ``` en el directorio ``` \view\frontend\layout ``` con la finalidad de declarar el formulario en el layout del checkout y con esto agregar los campos solicitados.   
 
+## Crea el Observer Post-Compra
+
+- Solicitud:
+
+  Añade al checkout un campo de texto "comentarios" y un selector obligatorio con al menos dos opciones (ejemplo: "sexo" con opciones "hombre" o “mujer”).
+
+- Solución:
+  
+  
