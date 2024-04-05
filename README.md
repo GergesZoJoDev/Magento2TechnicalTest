@@ -201,3 +201,78 @@ Para visualizar el método de envío dentro del checkout será necesario realiza
 
   Se creó archivo ``` events.xml ``` en el directorio ``` \etc ``` el cual será el encargado de definir la clase encargada de atender el ``` evento sales_order_place_after ```.
   Se genera la clase ``` Saleorderplaceafter ``` en el directorio ``` \Observer ``` dentro del cual se realiza la generación de un log exclusivo para ordenes y el almacenado de la información de la orden en formato JSON.
+
+## Crea una API Custom para Acceder al Log
+
+- Solicitud:
+
+  - Definir el Endpoint de la API:
+    - En tu módulo Magento, define un nuevo endpoint REST en webapi.xml, por ejemplo, /V1/order-log/:orderId.
+  - Crear un Controlador para la API:
+    - Implementa un controlador que maneje las solicitudes a este endpoint.
+    - El controlador debe leer el archivo de log y buscar la entrada correspondiente al ID del pedido solicitado.
+  - Autenticación y Seguridad:
+    - Asegúrate de implementar medidas de autenticación y autorización adecuadas para acceder a esta API.
+
+- Solución:
+
+  Se creó el archivo ``` acl.xml ``` en el directorio ``` \etc ``` con la finalidad de asignar el nivel de control de acceso al endpoint que será generado.
+  
+  Se creó el archivo ``` webapi.xml ``` en el directorio ``` \etc ``` para definir el endpint y aplicar la regla de control de acceso generada previamente.
+  
+  Se creó el archivo ``` di.xml ``` en el directorio ``` \etc ``` para configurar las interfaces a utilizarse.
+  
+  Se creó el archivo OrderManagementInterface.php en el directorio \CustomRest\CustomModule\Api para la interfaz de orden.
+
+  Se creó el archivo OrderManagement.php en el directorio ``` \CustomRest\CustomModule\Model\Api ``` para definir la lógica de respuesta a las solicitudes.
+
+  Se habilitó el Auth Token en la ruta de admin siguiente: ``` Stores > Configuration > Sales > oAuth > Consumer Setting ``` y se cambió la opción "Allow OAuth Access Tokens to be used as standalone Bearer tokens" a "yes" y se guardaron cambios. 
+
+  Ingresar en la URL ``` https://local.domain.com/swagger#/integrationAdminTokenServiceV1/PostV1IntegrationAdminToken ``` y dar clic en el botón "try it out", dirigirse a la sección de parametros y sustituir la palabra string en el JSON de referencia al usuario y contraseña correspondiente a un usuario administrador, como se muestra a continuación y dar clic en el botón "Execute":
+
+```
+{
+  "username": "admin",
+  "password": "Password123"
+}
+```
+
+  Copiar la cadena de respuesta con formato parecido al siguiente: ``` "eyJraWQiOiIxIiwiYWxnIjoiSFMyNTYifQ.eyJ1aWQiOjEsInV0eXBpZCI6MiwiaWF0IjoxNzEyMzQ5Njc2LCJleHAiOjE3MTIzNTMyNzZ9.Ez7-gJJr4Aiwf1N9J24WGSL4xKZk1dHvHUlPEUzTuuc" ```
+  
+  Ingresar en la URL ``` https://local.domain.com/swagger ``` y en la parte superior derecha dar clic en el botón "Authorize" y en el modal mostrado copiar la cadena anterior sin las comillas dobles ubicadas al inicio y al final de la cadena, dar clic en "Authorize"  
+  
+  Generar una orden en el frontend de la tienda y guardar el número de orden.
+  
+  Ingresar en la URL ``` https://local.domain.com/swagger#/customRestCustomModuleOrderManagementV1/GetV1OrderlogId ``` y buscar el numero de alguna orden generado en el paso anterior y con ello se podrá obtener un JSON de respuesta de la información de la orden contenida en el logs como el siguiente:
+  
+```
+{
+  "order_id": "000000024",
+  "state": "new",
+  "status": "pending",
+  "store_id": 1,
+  "subtotal": 124.2,
+  "grand_total": 139.2,
+  "total_qty_order": 2,
+  "customer_email": "gergeszojodev@gmail.com",
+  "customer_firstname": "Gerges",
+  "customer_lastname": "Zamudio",
+  "products": [
+    {
+      "id": "14",
+      "quantity": 1,
+      "price": 55.1
+    },
+    {
+      "id": "6",
+      "quantity": 1,
+      "price": 69.1
+    }
+  ]
+}
+```
+  
+   
+
+  
+  
