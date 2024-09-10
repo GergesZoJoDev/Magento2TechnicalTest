@@ -1,0 +1,25 @@
+type Query {
+    getQuotesByCustomerId(customer_id: Int!): [Quote]
+}
+
+type Quote {
+    quote_id: Int!
+    customer_name: String!
+    cart_id: Int!
+    status: Boolean!
+    expiration_date: String!
+    products: [QuoteProduct]!
+    subtotal: Float!
+    pdf_base64: String!
+}
+
+type QuoteProduct {
+    product_id: Int!
+    product_sku: String!
+    price: Float!
+    quantity: Int!
+}
+
+type Mutation {
+    updateQuoteStatus(quote_id: Int!, status: Boolean!): Boolean
+}
